@@ -49,6 +49,7 @@ class VirtualRealityPreferences(bpy.types.AddonPreferences):
         description="Library to use for the display",
         items=(("OCULUS", "Oculus", "Oculus - oculus.com"),
                ("OCULUS_LEGACY", "Oculus Legacy", "Oculus 0.5 - oculus.com"),
+               ("VIVE", "HTC Vive", "OpenVR"),
                ("DEBUG", "Debug", "Debug backend - no real HMD"),
                ),
         default="OCULUS_LEGACY",

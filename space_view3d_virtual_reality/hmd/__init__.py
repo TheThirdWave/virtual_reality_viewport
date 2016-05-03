@@ -29,11 +29,13 @@ def HMD(display_backend, context, error_callback):
     """
     from .oculus import Oculus
     from .oculus_legacy import OculusLegacy
+    from .openvr import OpenVR
     from .debug import Debug
 
     displays = {
             'OCULUS':Oculus,
             'OCULUS_LEGACY':OculusLegacy,
+            'VIVE':OpenVR,
             'DEBUG':Debug,
             }
 
@@ -295,4 +297,3 @@ class HMD_Base:
         matrix[3] = value[12:16]
 
         return matrix.transposed()
-
