@@ -18,6 +18,9 @@ class OpenVR(HMD_Base):
         checkModule('hmd_sdk_bridge')
 
     def _getHMDClass(self):
+        """
+        This is the python interface to the DLL file in hmd_sdk_bridge.
+        """
         from bridge.hmd.openvr import HMD
         return HMD
 
@@ -32,8 +35,12 @@ class OpenVR(HMD_Base):
             HMD = self._getHMDClass()
             self._hmd = HMD()
 
-            # gather arguments from HMD
+            # bail out early if we didn't initialize properly
+            if self._hmd.get_state_bool() == False:
+                raise Exception(self._hmd.get_status())
 
+
+            # gather arguments from HMD
             self.setEye(0)
             self.width = self._hmd.width_left
             self.height = self._hmd.height_left
