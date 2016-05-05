@@ -35,6 +35,10 @@ class OpenVR(HMD_Base):
             HMD = self._getHMDClass()
             self._hmd = HMD()
 
+            #import pdb
+            #pdb.set_trace()
+
+
             # bail out early if we didn't initialize properly
             if self._hmd.get_state_bool() == False:
                 raise Exception(self._hmd.get_status())
@@ -58,9 +62,62 @@ class OpenVR(HMD_Base):
                 raise Exception("Failed to setup OpenVR Compatible HMD")
 
         except Exception as E:
-            self.error("init", E, True)
+            self.error("OpenVR.init", E, True)
             self._hmd = None
             return False
 
         else:
             return True
+
+    def _setup(self):
+        return self._hmd.setup(self._color_texture[0], self._color_texture[1])
+
+    def loop(self, context):
+        """
+        Get fresh tracking data
+        """
+        try:
+            data = self._hmd.update()
+
+            self._eye_orientation_raw[0] = data[0]
+            self._eye_orientation_raw[1] = data[2]
+            self._eye_position_raw[0] = data[1]
+            self._eye_position_raw[1] = data[3]
+
+            # update matrices
+            super(OpenVR, self).loop(context)
+
+        except Exception as E:
+            self.error("OpenVR.loop", E, False)
+            return False
+
+        return True
+
+    def frameReady(self):
+        """
+        The frame is ready to be sent to the device
+        """
+        try:
+            self._hmd.frameReady()
+
+        except Exception as E:
+            self.error("OpenVR.frameReady", E, False)
+            return False
+
+        return True
+
+    def reCenter(self):
+        """
+        Re-center the HMD device
+
+        :return: return True if success
+        :rtype: bool
+        """
+        return self._hmd.reCenter()
+
+    def quit(self):
+        """
+        Garbage collection
+        """
+        self._hmd = None
+        return super(OpenVR, self).quit()
