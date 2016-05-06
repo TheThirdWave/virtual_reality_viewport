@@ -135,6 +135,7 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
                 return {'CANCELLED'}
 
             if self.init(context):
+                print('Running Modal...')
                 return {'RUNNING_MODAL'}
             else:
                 # quit right away
@@ -784,4 +785,3 @@ def unregister():
     del bpy.types.WindowManager.virtual_reality
     bpy.utils.unregister_class(VirtualRealityInfo)
     bpy.utils.unregister_class(VirtualRealityCommandInfo)
-
