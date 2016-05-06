@@ -35,10 +35,6 @@ class OpenVR(HMD_Base):
             HMD = self._getHMDClass()
             self._hmd = HMD()
 
-            #import pdb
-            #pdb.set_trace()
-
-
             # bail out early if we didn't initialize properly
             if self._hmd.get_state_bool() == False:
                 raise Exception(self._hmd.get_status())
