@@ -84,6 +84,7 @@ Credits
 * Oculus SDK 0.5 wrapper by https://github.com/jherico/python-ovrsdk
 * Oculus SDK 0.7 bridge: Dalai Felinto and Djalma Lucio @ Visgraf / IMPA
 * Blender Addon - Dalai Felinto - http://www.dalaifelinto.com
+* OpenVR Implementation by William Culver (@cedeon)
 
 Acknowledgements
 ================
