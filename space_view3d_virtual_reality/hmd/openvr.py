@@ -24,6 +24,22 @@ class OpenVR(HMD_Base):
         from bridge.hmd.openvr import HMD
         return HMD
 
+    @property
+    def projection_matrix(self):
+        if self._current_eye:
+            matrix = self._hmd.getProjectionMatrixRight(self._near, self._far)
+        else:
+            matrix = self._hmd.getProjectionMatrixLeft(self._near, self._far)
+
+        self.projection_matrix = matrix
+        return super(OpenVR, self).projection_matrix
+
+    @projection_matrix.setter
+    def projection_matrix(self, value):
+        self._projection_matrix[self._current_eye] = \
+                self._convertMatrixTo4x4(value)
+
+
     def init(self, context):
         """
         Initialize device
@@ -86,6 +102,10 @@ class OpenVR(HMD_Base):
         except Exception as E:
             self.error("OpenVR.loop", E, False)
             return False
+
+        #if VERBOSE:
+        #    print("Left Eye Orientation Raw: " + str(self._eye_orientation_raw[0]))
+        #    print("Right Eye Orientation Raw: " + str(self._eye_orientation_raw[1]))
 
         return True
 
