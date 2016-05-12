@@ -65,6 +65,7 @@ class HMD_Base:
         "_modelview_matrix",
         "_near",
         "_far",
+        "_status",
         }
 
     def __init__(self, name, is_direct_mode, context, error_callback):
@@ -81,6 +82,7 @@ class HMD_Base:
         self._eye_orientation_raw = [[1.0, 0.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0]]
         self._eye_position_raw = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]
         self._scale = self._calculateScale(context)
+        self._status = "Uninitialized"
 
         self._updateViewClipping(context)
 
@@ -119,6 +121,14 @@ class HMD_Base:
     @property
     def modelview_matrix(self):
         return self._modelview_matrix[self._current_eye]
+
+    @property
+    def status(self):
+        return self._status
+
+    @status.setter
+    def status(self, value):
+        self._status = value
 
     def setEye(self, eye):
         self._current_eye = int(bool(eye))

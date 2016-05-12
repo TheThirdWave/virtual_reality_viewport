@@ -55,6 +55,8 @@ class OpenVR(HMD_Base):
             if self._hmd.get_state_bool() == False:
                 raise Exception(self._hmd.get_status())
 
+            # Tell the user our status at this point.
+            self.status = "HMD Init OK. Make sure lighthouses running else no display."
 
             # gather arguments from HMD
             self.setEye(0)

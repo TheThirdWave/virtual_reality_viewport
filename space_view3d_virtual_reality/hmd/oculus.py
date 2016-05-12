@@ -68,6 +68,9 @@ class Oculus(HMD_Base):
             if not self._setup():
                 raise Exception("Failed to setup Oculus")
 
+            # set status to okay.
+            self.status = "HMD Initialized"
+
         except Exception as E:
             self.error("init", E, True)
             self._hmd = None
@@ -128,4 +131,3 @@ class Oculus(HMD_Base):
         """
         self._hmd = None
         return super(Oculus, self).quit()
-
