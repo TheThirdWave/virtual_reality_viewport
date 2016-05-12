@@ -250,7 +250,8 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
         self._hash_master = hash(context.area)
 
         # setup modal
-        self._timer = wm.event_timer_add(1.0 / 75.0, context.window) # 75 Hz
+        # TODO: check: cedeon changed to: 90Hz
+        self._timer = wm.event_timer_add(1.0 / 90.0, context.window) # 90 Hz
         self._handle_pre = bpy.types.SpaceView3D.draw_handler_add(self._draw_callback_pre, (context,), 'WINDOW', 'PRE_VIEW')
         self._handle_post = bpy.types.SpaceView3D.draw_handler_add(self._draw_callback_post, (context,), 'WINDOW', 'POST_VIEW')
         self._handle_pixel = bpy.types.SpaceView3D.draw_handler_add(self._draw_callback_pixel, (context,), 'WINDOW', 'POST_PIXEL')
@@ -268,6 +269,8 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
         if not self._hmd.init(context):
             self.report({'ERROR'}, "Error initializing device")
             return False
+        else:
+            self.report({'INFO'}, self._hmd.status )
 
         # get the data from device
         color_texture = [0, 0]
