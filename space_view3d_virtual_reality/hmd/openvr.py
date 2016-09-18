@@ -1,12 +1,9 @@
 """
-Oculus
-======
+OpenVR Compatible (HTC Vive)
+=============
 
-Oculus (oculus.com) head mounted display
-It uses a C app to connect with the SDK
-
-The bridge code is hosted at Visgraf:
-http://git.impa.br/dfelinto/hmd_sdk_bridge
+OpenVR Compatible head mounted display
+It uses a python wrapper to connect with the SDK
 """
 
 from . import HMD_Base
@@ -15,13 +12,16 @@ from ..lib import (
         checkModule,
         )
 
-class Oculus(HMD_Base):
+class OpenVR(HMD_Base):
     def __init__(self, context, error_callback):
-        super(Oculus, self).__init__('Oculus', True, context, error_callback)
+        super(OpenVR, self).__init__('OpenVR', True, context, error_callback)
         checkModule('hmd_sdk_bridge')
 
     def _getHMDClass(self):
-        from bridge.hmd.oculus import HMD
+        """
+        This is the python interface to the DLL file in hmd_sdk_bridge.
+        """
+        from bridge.hmd.openvr import HMD
         return HMD
 
     @property
@@ -32,12 +32,13 @@ class Oculus(HMD_Base):
             matrix = self._hmd.getProjectionMatrixLeft(self._near, self._far)
 
         self.projection_matrix = matrix
-        return super(Oculus, self).projection_matrix
+        return super(OpenVR, self).projection_matrix
 
     @projection_matrix.setter
     def projection_matrix(self, value):
         self._projection_matrix[self._current_eye] = \
                 self._convertMatrixTo4x4(value)
+
 
     def init(self, context):
         """
@@ -50,8 +51,14 @@ class Oculus(HMD_Base):
             HMD = self._getHMDClass()
             self._hmd = HMD()
 
-            # gather arguments from HMD
+            # bail out early if we didn't initialize properly
+            if self._hmd.get_state_bool() == False:
+                raise Exception(self._hmd.get_status())
 
+            # Tell the user our status at this point.
+            self.status = "HMD Init OK. Make sure lighthouses running else no display."
+
+            # gather arguments from HMD
             self.setEye(0)
             self.width = self._hmd.width_left
             self.height = self._hmd.height_left
@@ -61,18 +68,15 @@ class Oculus(HMD_Base):
             self.height = self._hmd.height_right
 
             # initialize FBO
-            if not super(Oculus, self).init():
+            if not super(OpenVR, self).init():
                 raise Exception("Failed to initialize HMD")
 
             # send it back to HMD
             if not self._setup():
-                raise Exception("Failed to setup Oculus")
-
-            # set status to okay.
-            self.status = "HMD Initialized"
+                raise Exception("Failed to setup OpenVR Compatible HMD")
 
         except Exception as E:
-            self.error("init", E, True)
+            self.error("OpenVR.init", E, True)
             self._hmd = None
             return False
 
@@ -95,11 +99,15 @@ class Oculus(HMD_Base):
             self._eye_position_raw[1] = data[3]
 
             # update matrices
-            super(Oculus, self).loop(context)
+            super(OpenVR, self).loop(context)
 
         except Exception as E:
-            self.error("loop", E, False)
+            self.error("OpenVR.loop", E, False)
             return False
+
+        #if VERBOSE:
+        #    print("Left Eye Orientation Raw: " + str(self._eye_orientation_raw[0]))
+        #    print("Right Eye Orientation Raw: " + str(self._eye_orientation_raw[1]))
 
         return True
 
@@ -111,7 +119,7 @@ class Oculus(HMD_Base):
             self._hmd.frameReady()
 
         except Exception as E:
-            self.error("frameReady", E, False)
+            self.error("OpenVR.frameReady", E, False)
             return False
 
         return True
@@ -130,4 +138,4 @@ class Oculus(HMD_Base):
         Garbage collection
         """
         self._hmd = None
-        return super(Oculus, self).quit()
+        return super(OpenVR, self).quit()

@@ -1,5 +1,5 @@
 # Virtual Reality Viewport
-Addon to bring virtual reality devices to the Blender viewport.
+Add-on to bring virtual reality devices to the Blender viewport.
 
 This is work in progress, use at your own risk.
 
@@ -13,10 +13,13 @@ Oculus Legacy  (Linux, Mac, Windows)
 Oculus (Windows)
 * Oculus 0.7 runtime
 
-Note
-====
-* Windows 64 builds are not working at the moment, use 32 bits instead
-* Extended Mode is the only supported mode
+HTC Vive (Windows)
+* OpenVR 0.9.20 runtime
+
+Current Known Issues
+====================
+HTC Vive: TODO: Fix Blender crash on OpenVR when stopping. (Pausing works).
+
 
 How to Use
 ==========
@@ -79,8 +82,9 @@ Roadmap
 Credits
 =======
 * Oculus SDK 0.5 wrapper by https://github.com/jherico/python-ovrsdk
-* Oculus SDK 0.7 bridge: Dalai Felinto and Djalma Lucio @ Visgraf / IMPA 
+* Oculus SDK 0.7 bridge: Dalai Felinto and Djalma Lucio @ Visgraf / IMPA
 * Blender Addon - Dalai Felinto - http://www.dalaifelinto.com
+* OpenVR Implementation by William Culver (@cedeon)
 
 Acknowledgements
 ================
