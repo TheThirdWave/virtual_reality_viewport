@@ -97,6 +97,7 @@ class OpenVR(HMD_Base):
             self._eye_orientation_raw[1] = data[2]
             self._eye_position_raw[0] = data[1]
             self._eye_position_raw[1] = data[3]
+            self._devices = data[4]
 
             # update matrices
             super(OpenVR, self).loop(context)

@@ -25,6 +25,8 @@ public:
 
 	virtual bool update(float *r_orientation_left, float *r_position_left, float *r_orientation_right, float *r_position_right) = 0;
 
+	virtual bool update(float *r_orientation_left, float *r_position_left, float *r_orientation_right, float *r_position_right, int *num_devices) = 0;
+
 	virtual bool update(
 		float *r_yaw_left, float *r_pitch_left, float *r_roll_left, float *r_position_left,
 		float *r_yaw_right, float *r_pitch_right, float *r_roll_right, float *r_position_right) = 0;

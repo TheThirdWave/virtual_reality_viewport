@@ -23,6 +23,8 @@ public:
 
 	bool update(float *, float *, float *, float *);
 
+	bool update(float *, float *, float *, float *, int *);
+
 	bool update(
 		float *, float *, float *, float *,
 		float *, float *, float *, float *);

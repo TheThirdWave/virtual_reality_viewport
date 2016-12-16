@@ -91,7 +91,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;CONSOLEAPPLICATION1_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile />
-      <AdditionalIncludeDirectories>C:\Users\Little Skittles\Desktop\openvr-master\samples\thirdparty\sdl2-2.0.3\include;C:\Users\Little Skittles\Desktop\openvr-master\headers;C:\Users\Little Skittles\Desktop\OculusSDK\LibOVR\Include;C:\Users\Little Skittles\Desktop\OculusSDK\LibOVRKernel\Src;C:\Users\Little Skittles\Desktop\glew-1.13.0\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Life Comp\Desktop\openvr-master\samples\thirdparty\sdl2-2.0.3\include;C:\Users\Life Comp\Desktop\openvr-master\headers;C:\Users\Life Comp\Desktop\OculusSDK\LibOVR\Include;C:\Users\Life Comp\Desktop\OculusSDK\LibOVRKernel\Src;C:\Users\Life Comp\Desktop\glew-1.13.0\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -99,7 +99,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>LibOVR.lib;opengl32.lib;glew32.lib;openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\Little Skittles\Desktop\openvr-master\lib\win32;C:\Users\Little Skittles\Desktop\OculusSDK\LibOVR\Lib\Windows\Win32\Release\VS2013;C:\Users\Little Skittles\Desktop\glew-1.13.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Life Comp\Desktop\openvr-master\lib\win32;C:\Users\Life Comp\Desktop\OculusSDK\LibOVR\Lib\Windows\Win32\Release\VS2013;C:\Users\Life Comp\Desktop\glew-1.13.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -112,7 +112,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;CONSOLEAPPLICATION1_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\Users\Little Skittles\Desktop\openvr-master\samples\thirdparty\sdl2-2.0.3\include;C:\Users\Little Skittles\Desktop\openvr-master\headers;C:\Users\Little Skittles\Desktop\OculusSDK\LibOVR\Include;C:\Users\Little Skittles\Desktop\OculusSDK\LibOVRKernel\Src;C:\Users\Little Skittles\Desktop\glew-1.13.0\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Life Comp\Desktop\openvr-master\samples\thirdparty\sdl2-2.0.3\include;C:\Users\Life Comp\Desktop\openvr-master\headers;C:\Users\Life Comp\Desktop\OculusSDK\LibOVR\Include;C:\Users\Life Comp\Desktop\OculusSDK\LibOVRKernel\Src;C:\Users\Life Comp\Desktop\glew-1.13.0\include;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -121,7 +121,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>LibOVR.lib;opengl32.lib;glew32.lib;openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\Little Skittles\Desktop\openvr-master\lib\win64;C:\Users\Little Skittles\Desktop\OculusSDK\LibOVR\Lib\Windows\x64\Release\VS2013;C:\Users\Little Skittles\Desktop\glew-1.13.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Life Comp\Desktop\openvr-master\lib\win64;C:\Users\Life Comp\Desktop\OculusSDK\LibOVR\Lib\Windows\x64\Release\VS2013;C:\Users\Life Comp\Desktop\glew-1.13.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>

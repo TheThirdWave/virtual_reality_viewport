@@ -53,6 +53,10 @@ class VirtualRealityPanel(bpy.types.Panel):
 
                     col.prop(vr, "lock_camera")
 
+                    debug = col.column()
+                    debug.enabled = False
+                    debug.prop(vr, "num_devices")
+
                     if vr.error_message:
                         col.separator()
                         col.label(text=vr.error_message)

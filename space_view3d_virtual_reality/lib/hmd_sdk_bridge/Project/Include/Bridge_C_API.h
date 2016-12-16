@@ -27,7 +27,7 @@ EXPORT_LIB void Debug_draw(const unsigned int color_texture) { Debug::draw(color
 EXPORT_LIB HMD *HMD_new(HMD::eHMDBackend backend){ return new HMD(backend); }
 EXPORT_LIB void HMD_del(HMD *hmd){ if (hmd) delete hmd; }
 EXPORT_LIB bool HMD_setup(HMD *hmd, const unsigned int color_texture_left, const unsigned int color_texture_right){ return hmd->setup(color_texture_left, color_texture_right); }
-EXPORT_LIB bool HMD_update(HMD *hmd, float *r_orientation_left, float *r_position_left, float *r_orientation_right, float *r_position_right){ return hmd->update(r_orientation_left, r_position_left, r_orientation_right, r_position_right); };
+EXPORT_LIB bool HMD_update(HMD *hmd, float *r_orientation_left, float *r_position_left, float *r_orientation_right, float *r_position_right, int *num_devices){ return hmd->update(r_orientation_left, r_position_left, r_orientation_right, r_position_right, num_devices); };
 EXPORT_LIB bool HMD_frameReady(HMD *hmd) { return hmd->frameReady(); }
 EXPORT_LIB bool HMD_reCenter(HMD *hmd) { return hmd->reCenter(); }
 EXPORT_LIB unsigned int HMD_widthLeft(HMD *hmd) { return hmd->getWidthLeft(); }

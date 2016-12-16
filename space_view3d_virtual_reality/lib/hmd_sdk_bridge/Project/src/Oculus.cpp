@@ -37,6 +37,8 @@ public:
 
 	bool update(float *r_orientation_left, float *r_position_left, float *r_orientation_right, float *r_position_right);
 
+	bool update(float *r_orientation_left, float *r_position_left, float *r_orientation_right, float *r_position_right, int *num_devices);
+
 	bool update(
 		float *r_yaw_left, float *r_pitch_left, float *r_roll_left, float *r_position_left,
 		float *r_yaw_right, float *r_pitch_right, float *r_roll_right, float *r_position_right);
@@ -365,6 +367,11 @@ bool OculusImpl::update(float *r_orientation_left, float *r_position_left, float
 	return false;
 };
 
+bool OculusImpl::update(float *r_orientation_left, float *r_position_left, float *r_orientation_right, float *r_position_right, int *num_devices)
+{
+	return false;
+};
+
 bool OculusImpl::update(
 	float *r_yaw_left, float *r_pitch_left, float *r_roll_left, float *r_position_left,
 	float *r_yaw_right, float *r_pitch_right, float *r_roll_right, float *r_position_right)
@@ -554,6 +561,11 @@ bool Oculus::setup(const unsigned int color_texture_left, const unsigned int col
 }
 
 bool Oculus::update(float *r_orientation_left, float *r_position_left, float *r_orientation_right, float *r_position_right)
+{
+	return this->m_me->update(r_orientation_left, r_position_left, r_orientation_right, r_position_right);
+}
+
+bool Oculus::update(float *r_orientation_left, float *r_position_left, float *r_orientation_right, float *r_position_right, int *num_devices)
 {
 	return this->m_me->update(r_orientation_left, r_position_left, r_orientation_right, r_position_right);
 }

@@ -17,6 +17,7 @@ import ctypes
 
 from ctypes import (
         c_float,
+		c_int,
         )
 
 class HMD(baseHMD):
@@ -102,18 +103,23 @@ class HMD(baseHMD):
 
         orientation_ptr = [None, None]
         position_ptr = [None, None]
+        devices_ptr = None
 
         orientation_ptr[0] = (c_float * 4)(*range(4))
         orientation_ptr[1] = (c_float * 4)(*range(4))
 
         position_ptr[0] = (c_float * 3)(*range(3))
         position_ptr[1] = (c_float * 3)(*range(3))
+		
+        devices_ptr = ctypes.POINTER(ctypes.c_int)
 
-        if bridge.HMD_update(self._device, orientation_ptr[0], position_ptr[0], orientation_ptr[1], position_ptr[1]):
+        if bridge.HMD_update(self._device, orientation_ptr[0], position_ptr[0], orientation_ptr[1], position_ptr[1], devices_ptr):
             self._orientation[0] = list(orientation_ptr[0])
             self._orientation[1] = list(orientation_ptr[1])
             self._position[0] = list(position_ptr[0])
             self._position[1] = list(position_ptr[1])
+            self._devices = devices_ptr[0]
+            
 
         return super(HMD, self).update()
 

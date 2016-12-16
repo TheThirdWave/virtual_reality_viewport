@@ -55,6 +55,8 @@ public:
 
 	bool update(float *r_orientation_left, float *r_position_left, float *r_orientation_right, float *r_position_right);
 
+	bool update(float *r_orientation_left, float *r_position_left, float *r_orientation_right, float *r_position_right, int *num_devices);
+
 	bool update(
 		float *r_yaw_left, float *r_pitch_left, float *r_roll_left, float *r_position_left,
 		float *r_yaw_right, float *r_pitch_right, float *r_roll_right, float *r_position_right);
@@ -104,6 +106,7 @@ private:
 	static eLibStatus m_lib_status;
 	Matrix4 m_rMat4TrackedPose[vr::k_unMaxTrackedDeviceCount];
 	Matrix4 m_rmat4DevicePose[ vr::k_unMaxTrackedDeviceCount ];
+	unsigned int num_poses;
 	Matrix4 m_mat4HMDPose;
 	Quaternion *m_hmdRotation;
 	Vector3 *m_hmdPosition;
@@ -239,6 +242,8 @@ void OpenVRImpl::UpdateHMDMatrixPose()
 			m_strPoseClasses += m_rDevClassChar[nDevice];
 		}
 	}
+
+	num_poses = m_iValidPoseCount;
 
 	if (m_rTrackedDevicePose[vr::k_unTrackedDeviceIndex_Hmd].bPoseIsValid)
 	{
@@ -414,6 +419,81 @@ bool OpenVRImpl::update(float *r_orientation_left, float *r_position_left, float
 	this->m_mat_view_left = m_mat4HMDPose * m_mat4eyePos[0];
 	this->m_mat_view_right = m_mat4HMDPose * m_mat4eyePos[1];
 	
+	MatrixHelper::CalculateRotation(this->m_q_left, this->m_mat_view_left);
+	MatrixHelper::GetPosition(this->m_v3_left, this->m_mat_view_left);
+
+	MatrixHelper::CalculateRotation(this->m_q_right, this->m_mat_view_right);
+	MatrixHelper::GetPosition(this->m_v3_right, this->m_mat_view_right);
+
+	Quaternion *orientation_in[2] = { &this->m_q_left, &this->m_q_right };
+	Vector3 *position_in[2] = { &this->m_v3_left, &this->m_v3_right };
+
+	float *orientation_out[2] = { r_orientation_left, r_orientation_right };
+	float *position_out[2] = { r_position_left, r_position_right };
+
+
+	for (int eye = 0; eye < 2; eye++) {
+		orientation_out[eye][0] = orientation_in[eye]->w;
+		orientation_out[eye][1] = orientation_in[eye]->x;
+		orientation_out[eye][2] = orientation_in[eye]->y;
+		orientation_out[eye][3] = orientation_in[eye]->z;
+
+#ifdef DEBUG
+		std::cout << "w:";
+		std::cout << orientation_out[eye][0];
+		std::cout << std::endl;
+
+		std::cout << "x:";
+		std::cout << orientation_out[eye][1];
+		std::cout << std::endl;
+
+		std::cout << "y:";
+		std::cout << orientation_out[eye][2];
+		std::cout << std::endl;
+
+		std::cout << "z:";
+		std::cout << orientation_out[eye][3];
+		std::cout << std::endl;
+#endif
+
+		position_out[eye][0] = this->m_scale * position_in[eye]->x;
+		position_out[eye][1] = this->m_scale * position_in[eye]->y;
+		position_out[eye][2] = this->m_scale * position_in[eye]->z;
+
+#ifdef DEBUG
+		std::cout << "m_scale: ";
+		std::cout << this->m_scale;
+		std::cout << std::endl;
+
+		std::cout << "PosX: ";
+		std::cout << position_out[eye][0];
+		std::cout << std::endl;
+
+		std::cout << "PosY: ";
+		std::cout << position_out[eye][1];
+		std::cout << std::endl;
+
+		std::cout << "PosZ: ";
+		std::cout << position_out[eye][2];
+		std::cout << std::endl;
+#endif
+	}
+
+	return true;
+};
+
+bool OpenVRImpl::update(float *r_orientation_left, float *r_position_left, float *r_orientation_right, float *r_position_right, int *num_devices)
+{
+	this->UpdateHMDMatrixPose();
+	// m_mat4HMDPose should now be updated.
+
+	//m_mat4HMDPose.invert();   // We want the image to do the opposite of our pose.
+
+	*num_devices = num_poses;
+
+	this->m_mat_view_left = m_mat4HMDPose * m_mat4eyePos[0];
+	this->m_mat_view_right = m_mat4HMDPose * m_mat4eyePos[1];
+
 	MatrixHelper::CalculateRotation(this->m_q_left, this->m_mat_view_left);
 	MatrixHelper::GetPosition(this->m_v3_left, this->m_mat_view_left);
 
@@ -696,6 +776,11 @@ bool OpenVRBridge::setup(const unsigned int color_texture_left, const unsigned i
 bool OpenVRBridge::update(float *r_orientation_left, float *r_position_left, float *r_orientation_right, float *r_position_right)
 {
 	return this->m_me->update(r_orientation_left, r_position_left, r_orientation_right, r_position_right);
+}
+
+bool OpenVRBridge::update(float *r_orientation_left, float *r_position_left, float *r_orientation_right, float *r_position_right, int *num_devices)
+{
+	return this->m_me->update(r_orientation_left, r_position_left, r_orientation_right, r_position_right, num_devices);
 }
 
 bool OpenVRBridge::update(

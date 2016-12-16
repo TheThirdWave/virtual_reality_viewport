@@ -15,6 +15,7 @@ class HMD:
         self._projection_matrix = [[i for i in range(16)], [i for i in range(16)]]
         self._orientation = [[i for i in range(4)] for i in range(2)]
         self._position = [[i for i in range(3)] for i in range(2)]
+        self._devices = 0
         self._width = [0, 0]
         self._height = [0, 0]
         self._status = ""
@@ -89,7 +90,7 @@ class HMD:
         :return: return left orientation, left_position, right_orientation, right_position
         :rtype: tuple(list(4), list(3), list(4), list(3))
         """
-        return self._orientation[0], self._position[0], self._orientation[1], self._position[1]
+        return self._orientation[0], self._position[0], self._orientation[1], self._position[1], self._devices
 
     def frameReady(self):
         """

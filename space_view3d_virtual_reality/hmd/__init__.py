@@ -77,6 +77,7 @@ class HMD_Base:
         self._height = [0, 0]
         self._projection_matrix = [Matrix.Identity(4), Matrix.Identity(4)]
         self._modelview_matrix = [Matrix.Identity(4), Matrix.Identity(4)]
+        self._devices = 0
         self._color_texture = [0, 0]
         self._offscreen = [None, None]
         self._eye_orientation_raw = [[1.0, 0.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0]]

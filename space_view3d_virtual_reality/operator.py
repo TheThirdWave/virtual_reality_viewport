@@ -409,6 +409,8 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
         self._is_rendering = True
         self._hmd.loop(context)
 
+        context.window_manager.virtual_reality.num_devices = self._hmd._devices
+
         scene = context.scene
         view3d = context.space_data
         region = context.region
@@ -686,7 +688,7 @@ class VirtualRealityInfo(bpy.types.PropertyGroup):
             name="Preview Scale",
             min=0,
             max=100,
-            default=20,
+            default=30,
             subtype='PERCENTAGE',
             )
 
@@ -704,6 +706,12 @@ class VirtualRealityInfo(bpy.types.PropertyGroup):
         default="ALL",
         )
 
+    num_devices = IntProperty(
+        name="Num Devices",
+        description="Lists the number of connected VR devices (Vive only).",
+        default=0,
+        )
+
     lock_camera = BoolProperty(
         name="Lock Camera",
         description="Lock the view to the camera (only for Direct Mode)",
@@ -719,6 +727,7 @@ class VirtualRealityInfo(bpy.types.PropertyGroup):
         default = False,
         description = "Skip the optimization to prevent extra drawing",
         )
+
 
     commands = CollectionProperty(type=VirtualRealityCommandInfo)
 
@@ -744,6 +753,7 @@ class VirtualRealityInfo(bpy.types.PropertyGroup):
         self.is_slave_setup = False
         self.is_paused = False
         self.is_debug = False
+
 
 
 # ############################################################

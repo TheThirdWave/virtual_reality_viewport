@@ -20,6 +20,8 @@ public:
 
 	bool update(float *, float *, float *, float *) { return false; }
 
+	bool update(float *, float *, float *, float *, int *) { return false; }
+
 	bool update(
 		float *, float *, float *, float *,
 		float *, float *, float *, float *)
