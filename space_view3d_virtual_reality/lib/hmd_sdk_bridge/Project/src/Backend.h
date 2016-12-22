@@ -45,6 +45,8 @@ public:
 
 	virtual void getProjectionMatrixRight(const float nearz, const float farz, const bool is_opengl, const bool is_right_hand, float *r_matrix) = 0;
 
+	virtual void getControllerState(float *shananagans, float *shananagargles) = 0;
+
 	/* generic */
 	virtual int getWidthLeft() { return this->m_width[0]; }
 	virtual int getHeightLeft() { return this->m_height[0]; }

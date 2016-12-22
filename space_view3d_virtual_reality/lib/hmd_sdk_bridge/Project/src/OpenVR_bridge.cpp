@@ -75,6 +75,8 @@ public:
 
 	void getProjectionMatrixRight(const float nearz, const float farz, const bool is_opengl, const bool is_right_hand, float *r_matrix);
 
+	void getControllerState(float* shananagans, float* shananagargles);
+
 
 private:
 	unsigned int getProjectionMatrixFlags(const bool is_opengl, const bool is_right_hand);
@@ -121,6 +123,7 @@ private:
 
 	char m_rDevClassChar[vr::k_unMaxTrackedDeviceCount];   // for each device, a character representing its class
 	vr::TrackedDevicePose_t m_rTrackedDevicePose[vr::k_unMaxTrackedDeviceCount];
+	vr::VRControllerState_t m_controlStates[2];
 	GLuint m_fbo[2];
 
 };
@@ -684,6 +687,30 @@ void OpenVRImpl::getProjectionMatrixRight(const float nearz, const float farz, c
 			r_matrix[i * 4 + j] = mat[i * 4 + j];
 }
 
+void OpenVRImpl::getControllerState(float* shananagans, float* shananagargles)
+{
+	vr::VRControllerState_t* hold;
+	int count = 0;
+	for (int nDevice = 0; nDevice < vr::k_unMaxTrackedDeviceCount; ++nDevice)
+	{
+		if (m_rDevClassChar[nDevice] == 'C')
+		{
+			if (m_pHMDy->GetControllerState(nDevice, hold))
+			{
+				m_controlStates[count++] = *hold;
+			}
+			else
+			{
+				m_controlStates[count].ulButtonPressed = -1;
+				m_controlStates[count].ulButtonTouched = -1;
+				m_controlStates[count++].unPacketNum = -1;
+			}
+		}
+	}
+	m_pHMDy->ButtonMaskFromId();
+
+}
+
 unsigned int OpenVRImpl::getProjectionMatrixFlags(const bool is_opengl, const bool is_right_hand)
 {
 	unsigned int flags = 1;  // Hardcoded for now. TODO: Review
@@ -824,6 +851,11 @@ void OpenVRBridge::getProjectionMatrixLeft(const float nearz, const float farz, 
 void OpenVRBridge::getProjectionMatrixRight(const float nearz, const float farz, const bool is_opengl, const bool is_right_hand, float *r_matrix)
 {
 	return this->m_me->getProjectionMatrixRight(nearz, farz, is_opengl, is_right_hand, r_matrix);
+}
+
+void OpenVRBridge::getControllerState(float* shananagans, float* shananagargles)
+{
+	return this->m_me->getControllerState(shananagans, shananagargles);
 }
 
 int OpenVRBridge::getWidthLeft()
