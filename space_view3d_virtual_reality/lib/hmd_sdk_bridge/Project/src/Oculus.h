@@ -43,6 +43,8 @@ public:
 
 	void getProjectionMatrixRight(const float nearz, const float farz, const bool is_opengl, const bool is_right_hand, float *r_matrix);
 
+	void getControllerState(uint64_t *, float *, uint64_t *, float *);
+
 	virtual int getWidthLeft(void);
 	virtual int getWidthRight(void);
 	virtual int getHeightLeft(void);

@@ -43,7 +43,7 @@ public:
 
 	void getProjectionMatrixRight(const float, const float, const bool, const bool, float *);
 
-	void getControllerState(float *, float *);
+	void getControllerState(uint64_t *, float *, uint64_t *, float *);
 
 	virtual int getWidthLeft(void);
 	virtual int getWidthRight(void);

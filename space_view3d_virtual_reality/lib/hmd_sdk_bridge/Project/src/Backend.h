@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include <stdint.h>
+
 #if defined(_WIN32) || defined(_WIN64)
 
 #if !defined(DllExport)
@@ -45,7 +47,7 @@ public:
 
 	virtual void getProjectionMatrixRight(const float nearz, const float farz, const bool is_opengl, const bool is_right_hand, float *r_matrix) = 0;
 
-	virtual void getControllerState(float *shananagans, float *shananagargles) = 0;
+	virtual void getControllerState(uint64_t *c_state1, float *c_pos1, uint64_t *c_state2, float *c_pos2) = 0;
 
 	/* generic */
 	virtual int getWidthLeft() { return this->m_width[0]; }

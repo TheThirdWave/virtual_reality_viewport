@@ -16,7 +16,7 @@
 class DllExport Stub : public Backend
 {
 public:
-	bool setup(const unsigned int, const unsigned int) { return false;  }
+	bool setup(const unsigned int, const unsigned int) { return false; }
 
 	bool update(float *, float *, float *, float *) { return false; }
 
@@ -54,6 +54,8 @@ public:
 	void getProjectionMatrixLeft(const float, const float, const bool, const bool, float *) {}
 
 	void getProjectionMatrixRight(const float, const float, const bool, const bool, float *) {}
+
+	void getControllerState(uint64_t *, float *, uint64_t *, float *) {}
 };
 
 #endif /* __STUB_H__ */

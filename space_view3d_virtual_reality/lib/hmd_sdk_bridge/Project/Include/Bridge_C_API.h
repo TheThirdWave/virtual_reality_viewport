@@ -3,6 +3,8 @@
 
 #include "Debug.h"
 
+#include <stdint.h>
+
 #include "HMD.h"
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -36,6 +38,7 @@ EXPORT_LIB unsigned int HMD_widthRight(HMD *hmd) { return hmd->getWidthRight(); 
 EXPORT_LIB unsigned int HMD_heightRight(HMD *hmd) { return hmd->getHeightRight(); }
 EXPORT_LIB void HMD_projectionMatrixLeft(HMD *hmd, const float nearz, const float farz, float *r_matrix) { hmd->getProjectionMatrixLeft(nearz, farz, true, true, r_matrix); }
 EXPORT_LIB void HMD_projectionMatrixRight(HMD *hmd, const float nearz, const float farz, float *r_matrix) { hmd->getProjectionMatrixRight(nearz, farz, true, true, r_matrix); }
+EXPORT_LIB void HMD_getControllerState(HMD *hmd, uint64_t *c_state1, float *c_pos1, uint64_t *c_state2, float *c_pos2) { hmd->getControllerState(c_state1, c_pos1, c_state2, c_pos2); }
 EXPORT_LIB float HMD_scaleGet(HMD *hmd) { return hmd->getScale(); }
 EXPORT_LIB void HMD_scaleSet(HMD *hmd, const float scale) { hmd->setScale(scale); }
 EXPORT_LIB const char* HMD_getStatus(HMD *hmd) { return hmd->getStatus(); }

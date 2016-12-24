@@ -410,6 +410,8 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
         self._hmd.loop(context)
 
         context.window_manager.virtual_reality.num_devices = self._hmd._devices
+        context.window_manager.virtual_reality.controller1_pos = self._hmd._conpos1
+        context.window_manager.virtual_reality.controller2_pos = self._hmd._conpos2
 
         scene = context.scene
         view3d = context.space_data

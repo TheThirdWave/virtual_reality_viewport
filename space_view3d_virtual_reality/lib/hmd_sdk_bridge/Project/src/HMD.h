@@ -110,6 +110,11 @@ public:
 		return m_hmd->getProjectionMatrixRight(nearz, farz, is_opengl, is_right_hand, r_matrix);
 	}
 
+	void getControllerState(uint64_t* c_state1, float* c_pos1, uint64_t* c_state2, float* c_pos2)
+	{
+		return m_hmd->getControllerState(c_state1, c_pos1, c_state2, c_pos2);
+	}
+
 	/* generic */
 	int getWidthLeft() { return m_hmd->getWidthLeft(); }
 	int getHeightLeft() { return m_hmd->getHeightLeft(); }
