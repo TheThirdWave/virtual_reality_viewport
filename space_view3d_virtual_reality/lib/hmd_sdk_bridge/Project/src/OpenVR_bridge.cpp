@@ -75,7 +75,7 @@ public:
 
 	void getProjectionMatrixRight(const float nearz, const float farz, const bool is_opengl, const bool is_right_hand, float *r_matrix);
 
-	void getControllerState(uint64_t* c_state1, float* c_pos1, uint64_t* c_state2, float* c_pos2);
+	void getControllerState(long* c_state1, float* c_pos1, long* c_state2, float* c_pos2);
 
 
 private:
@@ -688,9 +688,9 @@ void OpenVRImpl::getProjectionMatrixRight(const float nearz, const float farz, c
 			r_matrix[i * 4 + j] = mat[i * 4 + j];
 }
 
-void OpenVRImpl::getControllerState(uint64_t* c_state1, float* c_pos1, uint64_t* c_state2, float* c_pos2)
+void OpenVRImpl::getControllerState(long* c_state1, float* c_pos1, long* c_state2, float* c_pos2)
 {
-	vr::VRControllerState_t* hold;
+	/*vr::VRControllerState_t* hold;
 	int count = 0;
 	for (int nDevice = 0; nDevice < vr::k_unMaxTrackedDeviceCount; ++nDevice)
 	{
@@ -699,7 +699,7 @@ void OpenVRImpl::getControllerState(uint64_t* c_state1, float* c_pos1, uint64_t*
 			if (m_pHMDy->GetControllerState(nDevice, hold))
 			{
 				m_controlStates[count] = *hold;
-				MatrixHelper::GetPosition(this->m_controlPos[count], this->m_rmat4DevicePose[count++]);
+				MatrixHelper::GetPosition(m_controlPos[count], m_rmat4DevicePose[nDevice]);
 			}
 			else
 			{
@@ -708,8 +708,8 @@ void OpenVRImpl::getControllerState(uint64_t* c_state1, float* c_pos1, uint64_t*
 				m_controlStates[count++].unPacketNum = -1;
 			}
 		}
-	}
-	c_state1[0] = m_controlStates[0].unPacketNum;
+	}*/
+	/*c_state1[0] = m_controlStates[0].unPacketNum;
 	c_state1[1] = m_controlStates[0].ulButtonPressed;
 	c_state1[2] = m_controlStates[0].ulButtonTouched;
 	c_pos1[0] = m_controlPos[0].x;
@@ -720,7 +720,7 @@ void OpenVRImpl::getControllerState(uint64_t* c_state1, float* c_pos1, uint64_t*
 	c_state2[2] = m_controlStates[1].ulButtonTouched;
 	c_pos2[0] = m_controlPos[1].x;
 	c_pos2[1] = m_controlPos[1].y;
-	c_pos2[2] = m_controlPos[1].z;
+	c_pos2[2] = m_controlPos[1].z;*/
 }
 
 unsigned int OpenVRImpl::getProjectionMatrixFlags(const bool is_opengl, const bool is_right_hand)
@@ -865,7 +865,7 @@ void OpenVRBridge::getProjectionMatrixRight(const float nearz, const float farz,
 	return this->m_me->getProjectionMatrixRight(nearz, farz, is_opengl, is_right_hand, r_matrix);
 }
 
-void OpenVRBridge::getControllerState(uint64_t* c_state1, float* c_pos1, uint64_t* c_state2, float* c_pos2)
+void OpenVRBridge::getControllerState(long* c_state1, float* c_pos1, long* c_state2, float* c_pos2)
 {
 	return this->m_me->getControllerState(c_state1, c_pos1, c_state2, c_pos2);
 }
