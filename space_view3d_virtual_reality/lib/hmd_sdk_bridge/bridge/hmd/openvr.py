@@ -128,11 +128,12 @@ class HMD(baseHMD):
             self._position[1] = list(position_ptr[1])
             self._devices = devices_ptr[0]
             
-        """bridge.HMD_getControllerState(self._device, constate1_ptr, conpos1_ptr, constate2_ptr, conpos2_ptr)"""
-        """self._cstate1 = list(constate1_ptr)
-        self._cstate2 = list(constate2_ptr)"""
+        bridge.HMD_getControllerState(self._device, constate1_ptr, conpos1_ptr, constate2_ptr, conpos2_ptr)
+        self._cstate1 = list(constate1_ptr)
+        self._cstate2 = list(constate2_ptr)
         self._cpos1 = list(conpos1_ptr)
         self._cpos2 = list(conpos2_ptr)
+        sys.stdout.flush()
         return super(HMD, self).update()
 
     def frameReady(self):

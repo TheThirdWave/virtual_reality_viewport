@@ -58,12 +58,12 @@ class VirtualRealityPanel(bpy.types.Panel):
                     debug.prop(vr, "num_devices")
                     debug.separator()
 					
-                    """debug = col.column()
+                    debug = col.column()
                     debug.enabled = False
                     debug.prop(vr, "controller1_pos")
                     debug.column()
                     debug.enabled = False
-                    debug.prop(vr, "controller2_pos")"""
+                    debug.prop(vr, "controller2_pos")
 
                     if vr.error_message:
                         col.separator()

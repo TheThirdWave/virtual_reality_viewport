@@ -54,6 +54,10 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
     # update the values in def _init_static
     _hmd = None
     _timer = None
+    _con1obj = None
+    _con2obj = None
+    _con1dat = None
+    _con2dat = None
     _handle_pre = None
     _handle_post = None
     _handle_pixel = None
@@ -258,6 +262,14 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
         self._handle_pixel = bpy.types.SpaceView3D.draw_handler_add(self._draw_callback_pixel, (context,), 'WINDOW', 'POST_PIXEL')
         wm.modal_handler_add(self)
 
+        # Create spheres to render for controllers. alDentesInferno
+        bpy.ops.mesh.primitive_uv_sphere_add()
+        self._con1obj = bpy.context.object
+        self._con1dat = self._con1obj.data
+        bpy.ops.mesh.primitive_uv_sphere_add()
+        self._con2obj = bpy.context.object
+        self._con2dat = self._con2obj.data
+
         if self._hmd.is_direct_mode:
             self._init(context)
         else:
@@ -415,6 +427,12 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
         vr.num_devices = self._hmd._devices
         vr.controller1_pos = self._hmd._conpos1
         vr.controller2_pos = self._hmd._conpos2
+        print(self._hmd._conpos1[0])
+        print(self._hmd._conpos1[1])
+        print(self._hmd._conpos1[2])
+
+        self._con1obj.location = self._hmd._conpos1
+        self._con2obj.location = self._hmd._conpos2
 
         scene = context.scene
         view3d = context.space_data
@@ -718,7 +736,7 @@ class VirtualRealityInfo(bpy.types.PropertyGroup):
         default=0,
         )
 
-    """controller1_pos = FloatVectorProperty(
+    controller1_pos = FloatVectorProperty(
         name="controller1_pos",
         description="the position of controller 1.",
         precision=5,
@@ -728,7 +746,7 @@ class VirtualRealityInfo(bpy.types.PropertyGroup):
         name="controller2_pos",
         description="the position of controller 2.",
         precision=5,
-        )"""
+        )
 
     lock_camera = BoolProperty(
         name="Lock Camera",

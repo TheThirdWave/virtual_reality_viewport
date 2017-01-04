@@ -243,6 +243,7 @@ void OpenVRImpl::UpdateHMDMatrixPose()
 				default:                                       m_rDevClassChar[nDevice] = '?'; break;
 				}
 			}
+			printf("devclasschar: %c \n", m_rDevClassChar[nDevice]);
 			m_strPoseClasses += m_rDevClassChar[nDevice];
 		}
 	}
@@ -308,6 +309,9 @@ OpenVRImpl::OpenVRImpl()
 	this->m_frame = -1;
 	this->m_fbo[0] = 0;
 	this->m_fbo[1] = 0;
+	
+	//updateHMDMatrixPose checks if m_rDevClassChar is 0 before it does stuff, so make sure it's actually 0
+	memset(&m_rDevClassChar, 0, (sizeof(char) * vr::k_unMaxTrackedDeviceCount));
 
 	// ovr_GetFovTextureSize on a DK2 is 1182x1464 - hardcode for now.
 	this->m_width[0] = 1182;
@@ -488,6 +492,7 @@ bool OpenVRImpl::update(float *r_orientation_left, float *r_position_left, float
 
 bool OpenVRImpl::update(float *r_orientation_left, float *r_position_left, float *r_orientation_right, float *r_position_right, int *num_devices)
 {
+	printf("update start\n");
 	this->UpdateHMDMatrixPose();
 	// m_mat4HMDPose should now be updated.
 
@@ -557,7 +562,7 @@ bool OpenVRImpl::update(float *r_orientation_left, float *r_position_left, float
 		std::cout << std::endl;
 #endif
 	}
-
+	printf("update end\n");
 	return true;
 };
 
@@ -691,42 +696,42 @@ void OpenVRImpl::getProjectionMatrixRight(const float nearz, const float farz, c
 void OpenVRImpl::getControllerState(long* c_state1, float* c_pos1, long* c_state2, float* c_pos2)
 {
 	printf("getControllerState start.\n");
-	vr::VRControllerState_t* hold;
+	vr::VRControllerState_t hold;
 	int count = 0;
 	for (int nDevice = 0; nDevice < vr::k_unMaxTrackedDeviceCount; nDevice++)
 	{
-		if (m_pHMDy->GetTrackedDeviceClass(nDevice) == vr::TrackedDeviceClass_Controller)
+		if (m_rDevClassChar[nDevice] == 'C')
 		{
 			printf("found controller.\n");
-			if (m_pHMDy->GetControllerState(nDevice, hold))
+			if (m_pHMDy->GetControllerState(nDevice, &hold))
 			{
-				//m_controlStates[count] = *hold;
-				//MatrixHelper::GetPosition(m_controlPos[count], m_rmat4DevicePose[nDevice]);
+				m_controlStates[count] = hold;
+				MatrixHelper::GetPosition(m_controlPos[count], m_rmat4DevicePose[nDevice]);
 			}
 			else
 			{
 				printf("conroller state at pos %d failed.\n", nDevice);
-				//m_controlStates[count].ulButtonPressed = -1;
-				//m_controlStates[count].ulButtonTouched = -1;
-				//m_controlStates[count].unPacketNum = -1;
+				m_controlStates[count].ulButtonPressed = -1;
+				m_controlStates[count].ulButtonTouched = -1;
+				m_controlStates[count].unPacketNum = -1;
 			}
-			count++;
+			if(count < 2) count++;
 		}
 	}
 	printf("%f, %f, %f\n", m_controlPos[0].x, m_controlPos[0].y, m_controlPos[0].z);
 	printf("%f, %f, %f\n", m_controlPos[1].x, m_controlPos[1].y, m_controlPos[1].z);
-	//c_state1[0] = m_controlStates[0].unPacketNum;
-	//c_state1[1] = m_controlStates[0].ulButtonPressed;
-	//c_state1[2] = m_controlStates[0].ulButtonTouched;
-	//c_pos1[0] = m_controlPos[0].x;
-	//c_pos1[1] = m_controlPos[0].y;
-	//c_pos1[2] = m_controlPos[0].z;
-	//c_state2[0] = m_controlStates[1].unPacketNum;
-	//c_state2[1] = m_controlStates[1].ulButtonPressed;
-	//c_state2[2] = m_controlStates[1].ulButtonTouched;
-	//c_pos2[0] = m_controlPos[1].x;
-	//c_pos2[1] = m_controlPos[1].y;
-	//c_pos2[2] = m_controlPos[1].z;
+	c_state1[0] = m_controlStates[0].unPacketNum;
+	c_state1[1] = m_controlStates[0].ulButtonPressed;
+	c_state1[2] = m_controlStates[0].ulButtonTouched;
+	c_pos1[0] = m_controlPos[0].x;
+	c_pos1[1] = m_controlPos[0].y;
+	c_pos1[2] = m_controlPos[0].z;
+	c_state2[0] = m_controlStates[1].unPacketNum;
+	c_state2[1] = m_controlStates[1].ulButtonPressed;
+	c_state2[2] = m_controlStates[1].ulButtonTouched;
+	c_pos2[0] = m_controlPos[1].x;
+	c_pos2[1] = m_controlPos[1].y;
+	c_pos2[2] = m_controlPos[1].z;
 	printf("getControllerState end.\n");
 }
 
