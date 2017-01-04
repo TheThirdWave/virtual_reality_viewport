@@ -1,4 +1,5 @@
 import bpy
+import sys
 
 from bpy.app.handlers import persistent
 
@@ -406,12 +407,14 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
         """
         Get fresh tracking data and render into the FBO
         """
+        wm = context.window_manager
+        vr = wm.virtual_reality
         self._is_rendering = True
         self._hmd.loop(context)
 
-        context.window_manager.virtual_reality.num_devices = self._hmd._devices
-        context.window_manager.virtual_reality.controller1_pos = self._hmd._conpos1
-        context.window_manager.virtual_reality.controller2_pos = self._hmd._conpos2
+        vr.num_devices = self._hmd._devices
+        vr.controller1_pos = self._hmd._conpos1
+        vr.controller2_pos = self._hmd._conpos2
 
         scene = context.scene
         view3d = context.space_data
@@ -648,6 +651,7 @@ from bpy.props import (
         EnumProperty,
         StringProperty,
         IntProperty,
+        FloatVectorProperty,
         )
 
 
@@ -713,6 +717,18 @@ class VirtualRealityInfo(bpy.types.PropertyGroup):
         description="Lists the number of connected VR devices (Vive only).",
         default=0,
         )
+
+    """controller1_pos = FloatVectorProperty(
+        name="controller1_pos",
+        description="the position of controller 1.",
+        precision=5,
+        )
+
+    controller2_pos = FloatVectorProperty(
+        name="controller2_pos",
+        description="the position of controller 2.",
+        precision=5,
+        )"""
 
     lock_camera = BoolProperty(
         name="Lock Camera",

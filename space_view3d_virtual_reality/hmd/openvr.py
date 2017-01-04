@@ -102,7 +102,6 @@ class OpenVR(HMD_Base):
             self._constate2 = data[6]
             self._conpos1 = data[7]
             self._conpos2 = data[8]
-
             # update matrices
             super(OpenVR, self).loop(context)
 

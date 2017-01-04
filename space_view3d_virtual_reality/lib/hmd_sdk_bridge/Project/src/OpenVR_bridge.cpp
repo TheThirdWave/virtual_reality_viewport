@@ -690,37 +690,44 @@ void OpenVRImpl::getProjectionMatrixRight(const float nearz, const float farz, c
 
 void OpenVRImpl::getControllerState(long* c_state1, float* c_pos1, long* c_state2, float* c_pos2)
 {
-	/*vr::VRControllerState_t* hold;
+	printf("getControllerState start.\n");
+	vr::VRControllerState_t* hold;
 	int count = 0;
-	for (int nDevice = 0; nDevice < vr::k_unMaxTrackedDeviceCount; ++nDevice)
+	for (int nDevice = 0; nDevice < vr::k_unMaxTrackedDeviceCount; nDevice++)
 	{
-		if (m_rDevClassChar[nDevice] == 'C')
+		if (m_pHMDy->GetTrackedDeviceClass(nDevice) == vr::TrackedDeviceClass_Controller)
 		{
+			printf("found controller.\n");
 			if (m_pHMDy->GetControllerState(nDevice, hold))
 			{
-				m_controlStates[count] = *hold;
-				MatrixHelper::GetPosition(m_controlPos[count], m_rmat4DevicePose[nDevice]);
+				//m_controlStates[count] = *hold;
+				//MatrixHelper::GetPosition(m_controlPos[count], m_rmat4DevicePose[nDevice]);
 			}
 			else
 			{
-				m_controlStates[count].ulButtonPressed = -1;
-				m_controlStates[count].ulButtonTouched = -1;
-				m_controlStates[count++].unPacketNum = -1;
+				printf("conroller state at pos %d failed.\n", nDevice);
+				//m_controlStates[count].ulButtonPressed = -1;
+				//m_controlStates[count].ulButtonTouched = -1;
+				//m_controlStates[count].unPacketNum = -1;
 			}
+			count++;
 		}
-	}*/
-	/*c_state1[0] = m_controlStates[0].unPacketNum;
-	c_state1[1] = m_controlStates[0].ulButtonPressed;
-	c_state1[2] = m_controlStates[0].ulButtonTouched;
-	c_pos1[0] = m_controlPos[0].x;
-	c_pos1[1] = m_controlPos[0].y;
-	c_pos1[2] = m_controlPos[0].z;
-	c_state2[0] = m_controlStates[1].unPacketNum;
-	c_state2[1] = m_controlStates[1].ulButtonPressed;
-	c_state2[2] = m_controlStates[1].ulButtonTouched;
-	c_pos2[0] = m_controlPos[1].x;
-	c_pos2[1] = m_controlPos[1].y;
-	c_pos2[2] = m_controlPos[1].z;*/
+	}
+	printf("%f, %f, %f\n", m_controlPos[0].x, m_controlPos[0].y, m_controlPos[0].z);
+	printf("%f, %f, %f\n", m_controlPos[1].x, m_controlPos[1].y, m_controlPos[1].z);
+	//c_state1[0] = m_controlStates[0].unPacketNum;
+	//c_state1[1] = m_controlStates[0].ulButtonPressed;
+	//c_state1[2] = m_controlStates[0].ulButtonTouched;
+	//c_pos1[0] = m_controlPos[0].x;
+	//c_pos1[1] = m_controlPos[0].y;
+	//c_pos1[2] = m_controlPos[0].z;
+	//c_state2[0] = m_controlStates[1].unPacketNum;
+	//c_state2[1] = m_controlStates[1].ulButtonPressed;
+	//c_state2[2] = m_controlStates[1].ulButtonTouched;
+	//c_pos2[0] = m_controlPos[1].x;
+	//c_pos2[1] = m_controlPos[1].y;
+	//c_pos2[2] = m_controlPos[1].z;
+	printf("getControllerState end.\n");
 }
 
 unsigned int OpenVRImpl::getProjectionMatrixFlags(const bool is_opengl, const bool is_right_hand)

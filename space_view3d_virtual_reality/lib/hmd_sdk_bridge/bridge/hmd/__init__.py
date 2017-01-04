@@ -15,8 +15,8 @@ class HMD:
         self._projection_matrix = [[i for i in range(16)], [i for i in range(16)]]
         self._orientation = [[i for i in range(4)] for i in range(2)]
         self._position = [[i for i in range(3)] for i in range(2)]
-        self._cstate1 = [i for i in range(3)]
-        self._cstate2 = [i for i in range(3)]
+        self._cstate1 = 0
+        self._cstate2 = 0
         self._cpos1 = [i for i in range(3)]
         self._cpos2 = [i for i in range(3)]
         self._devices = 0
