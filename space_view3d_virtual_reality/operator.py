@@ -427,12 +427,10 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
         vr.num_devices = self._hmd._devices
         vr.controller1_pos = self._hmd._conpos1
         vr.controller2_pos = self._hmd._conpos2
-        print(self._hmd._conpos1[0])
-        print(self._hmd._conpos1[1])
-        print(self._hmd._conpos1[2])
+        print(self._hmd._eye_position_raw)
 
-        self._con1obj.location = self._hmd._conpos1
-        self._con2obj.location = self._hmd._conpos2
+        self._con1obj.location = self._hmd._conpos1_view
+        self._con2obj.location = self._hmd._conpos2_view
 
         scene = context.scene
         view3d = context.space_data

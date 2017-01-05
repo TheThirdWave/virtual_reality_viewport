@@ -4,6 +4,7 @@ TODO = True
 from mathutils import (
         Matrix,
         Quaternion,
+        Vector,
         )
 
 import gpu
@@ -82,6 +83,8 @@ class HMD_Base:
         self._constate2 = 0
         self._conpos1 = [i for i in range(3)]
         self._conpos2 = [i for i in range(3)]
+        self._conpos1_view = [i for i in range(3)]
+        self._conpos2_view = [i for i in range(3)]
         self._color_texture = [0, 0]
         self._offscreen = [None, None]
         self._eye_orientation_raw = [[1.0, 0.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0]]
@@ -223,6 +226,11 @@ class HMD_Base:
 
         tracking_mode = vr.tracking_mode
         view_matrix = self._getViewMatrix(context, vr.lock_camera)
+
+        # transform controller positions to match the headset's position
+        self._conpos1_view = Vector(self._conpos1) * view_matrix.inverted()
+        self._conpos2_view = Vector(self._conpos2) * view_matrix.inverted()
+        print(view_matrix)
 
         for i in range(2):
             if tracking_mode == 'NONE':
