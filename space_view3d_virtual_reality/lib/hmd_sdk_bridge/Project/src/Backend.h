@@ -46,7 +46,7 @@ public:
 
 	virtual void getProjectionMatrixRight(const float nearz, const float farz, const bool is_opengl, const bool is_right_hand, float *r_matrix) = 0;
 
-	virtual void getControllerState(long *c_state1, float *c_pos1, long *c_state2, float *c_pos2) = 0;
+	virtual void getControllerState(unsigned long long *c_state1, float *c_pos1, unsigned long long *c_state2, float *c_pos2) = 0;
 
 	/* generic */
 	virtual int getWidthLeft() { return this->m_width[0]; }

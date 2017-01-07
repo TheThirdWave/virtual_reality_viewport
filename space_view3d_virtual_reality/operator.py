@@ -263,10 +263,10 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
         wm.modal_handler_add(self)
 
         # Create spheres to render for controllers. alDentesInferno
-        bpy.ops.mesh.primitive_uv_sphere_add()
+        bpy.ops.mesh.primitive_uv_sphere_add(size=.05 * self._hmd._scale)
         self._con1obj = bpy.context.object
         self._con1dat = self._con1obj.data
-        bpy.ops.mesh.primitive_uv_sphere_add()
+        bpy.ops.mesh.primitive_uv_sphere_add(size=.05 * self._hmd._scale)
         self._con2obj = bpy.context.object
         self._con2dat = self._con2obj.data
 

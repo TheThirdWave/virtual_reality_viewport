@@ -89,7 +89,8 @@ class HMD_Base:
         self._offscreen = [None, None]
         self._eye_orientation_raw = [[1.0, 0.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0]]
         self._eye_position_raw = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]
-        self._scale = self._calculateScale(context)
+        ##self._scale = self._calculateScale(context)
+        self._scale = 10
         self._status = "Uninitialized"
 
         self._updateViewClipping(context)
@@ -228,9 +229,10 @@ class HMD_Base:
         view_matrix = self._getViewMatrix(context, vr.lock_camera)
 
         # transform controller positions to match the headset's position
-        self._conpos1_view = Vector(self._conpos1) * view_matrix.inverted()
-        self._conpos2_view = Vector(self._conpos2) * view_matrix.inverted()
-        print(view_matrix)
+        self._conpos1_view = view_matrix.inverted() * Vector(self._scaleMovement(self._conpos1))
+        self._conpos2_view = view_matrix.inverted() * Vector(self._scaleMovement(self._conpos2))
+        print(self._constate1)
+        print(self._constate2)
 
         for i in range(2):
             if tracking_mode == 'NONE':

@@ -43,6 +43,15 @@ typedef enum eLibStatus
 	LIB_INITIALIZED,
 };
 
+typedef enum padButton
+{
+	NONE = 0,
+	DOWN,
+	RIGHT,
+	UP,
+	LEFT,
+};
+
 class DllExport OpenVRImpl : protected Backend
 {
 public:
@@ -75,11 +84,12 @@ public:
 
 	void getProjectionMatrixRight(const float nearz, const float farz, const bool is_opengl, const bool is_right_hand, float *r_matrix);
 
-	void getControllerState(long* c_state1, float* c_pos1, long* c_state2, float* c_pos2);
+	void getControllerState(unsigned long long* c_state1, float* c_pos1, unsigned long long* c_state2, float* c_pos2);
 
 
 private:
 	unsigned int getProjectionMatrixFlags(const bool is_opengl, const bool is_right_hand);
+	int getTrackpadButton(const vr::VRControllerState_t &flags);
 	bool initializeLibrary(void);
 	bool initializeCompositor(void);
 	bool initializeOverlay(void);
@@ -243,7 +253,6 @@ void OpenVRImpl::UpdateHMDMatrixPose()
 				default:                                       m_rDevClassChar[nDevice] = '?'; break;
 				}
 			}
-			printf("devclasschar: %c \n", m_rDevClassChar[nDevice]);
 			m_strPoseClasses += m_rDevClassChar[nDevice];
 		}
 	}
@@ -492,7 +501,6 @@ bool OpenVRImpl::update(float *r_orientation_left, float *r_position_left, float
 
 bool OpenVRImpl::update(float *r_orientation_left, float *r_position_left, float *r_orientation_right, float *r_position_right, int *num_devices)
 {
-	printf("update start\n");
 	this->UpdateHMDMatrixPose();
 	// m_mat4HMDPose should now be updated.
 
@@ -562,7 +570,6 @@ bool OpenVRImpl::update(float *r_orientation_left, float *r_position_left, float
 		std::cout << std::endl;
 #endif
 	}
-	printf("update end\n");
 	return true;
 };
 
@@ -693,16 +700,14 @@ void OpenVRImpl::getProjectionMatrixRight(const float nearz, const float farz, c
 			r_matrix[i * 4 + j] = mat[i * 4 + j];
 }
 
-void OpenVRImpl::getControllerState(long* c_state1, float* c_pos1, long* c_state2, float* c_pos2)
+void OpenVRImpl::getControllerState(unsigned long long* c_state1, float* c_pos1, unsigned long long* c_state2, float* c_pos2)
 {
-	printf("getControllerState start.\n");
 	vr::VRControllerState_t hold;
 	int count = 0;
 	for (int nDevice = 0; nDevice < vr::k_unMaxTrackedDeviceCount; nDevice++)
 	{
 		if (m_rDevClassChar[nDevice] == 'C')
 		{
-			printf("found controller.\n");
 			if (m_pHMDy->GetControllerState(nDevice, &hold))
 			{
 				m_controlStates[count] = hold;
@@ -710,7 +715,6 @@ void OpenVRImpl::getControllerState(long* c_state1, float* c_pos1, long* c_state
 			}
 			else
 			{
-				printf("conroller state at pos %d failed.\n", nDevice);
 				m_controlStates[count].ulButtonPressed = -1;
 				m_controlStates[count].ulButtonTouched = -1;
 				m_controlStates[count].unPacketNum = -1;
@@ -718,21 +722,34 @@ void OpenVRImpl::getControllerState(long* c_state1, float* c_pos1, long* c_state
 			if(count < 2) count++;
 		}
 	}
-	printf("%f, %f, %f\n", m_controlPos[0].x, m_controlPos[0].y, m_controlPos[0].z);
-	printf("%f, %f, %f\n", m_controlPos[1].x, m_controlPos[1].y, m_controlPos[1].z);
-	c_state1[0] = m_controlStates[0].unPacketNum;
-	c_state1[1] = m_controlStates[0].ulButtonPressed;
-	c_state1[2] = m_controlStates[0].ulButtonTouched;
+
+	c_state1[0] = m_controlStates[0].ulButtonPressed;
+	c_state1[1] = getTrackpadButton(m_controlStates[0]);
 	c_pos1[0] = m_controlPos[0].x;
 	c_pos1[1] = m_controlPos[0].y;
 	c_pos1[2] = m_controlPos[0].z;
-	c_state2[0] = m_controlStates[1].unPacketNum;
-	c_state2[1] = m_controlStates[1].ulButtonPressed;
-	c_state2[2] = m_controlStates[1].ulButtonTouched;
+	c_state2[0] = m_controlStates[1].ulButtonPressed;
+	c_state2[1] = getTrackpadButton(m_controlStates[1]);
 	c_pos2[0] = m_controlPos[1].x;
 	c_pos2[1] = m_controlPos[1].y;
 	c_pos2[2] = m_controlPos[1].z;
-	printf("getControllerState end.\n");
+}
+
+int OpenVRImpl::getTrackpadButton(const vr::VRControllerState_t &flags)
+{
+	//check to see if the Trackpad is being pressed
+	if (vr::ButtonMaskFromId(vr::k_EButton_SteamVR_Touchpad) & flags.ulButtonPressed)
+	{
+		float x = flags.rAxis[vr::k_eControllerAxis_None].x;//no, for whatever reason the x and y data for the touchpad isn't stored under
+		float y = flags.rAxis[vr::k_eControllerAxis_None].y;//k_eControllerAxis_Trackpad, even though a trackpad and a touchpad are the same thing
+		double radians = atan2(x, y);
+		printf("x = %f, y = %f, rads = %f", x, y, radians);
+		if (radians > (M_PI / 4) && radians < ((M_PI / 4) * 3)){ return DOWN; }
+		else if (radians > -(M_PI / 4) && radians < (M_PI / 4)){ return RIGHT; }
+		else if (radians > -((M_PI / 4) * 3) && radians < -(M_PI / 4)){ return UP; }
+		else if (radians > ((M_PI / 4) * 3) && radians < -((M_PI / 4) * 3)){ return LEFT; }
+		return NONE;
+	}
 }
 
 unsigned int OpenVRImpl::getProjectionMatrixFlags(const bool is_opengl, const bool is_right_hand)
@@ -877,7 +894,7 @@ void OpenVRBridge::getProjectionMatrixRight(const float nearz, const float farz,
 	return this->m_me->getProjectionMatrixRight(nearz, farz, is_opengl, is_right_hand, r_matrix);
 }
 
-void OpenVRBridge::getControllerState(long* c_state1, float* c_pos1, long* c_state2, float* c_pos2)
+void OpenVRBridge::getControllerState(unsigned long long* c_state1, float* c_pos1, unsigned long long* c_state2, float* c_pos2)
 {
 	return this->m_me->getControllerState(c_state1, c_pos1, c_state2, c_pos2);
 }

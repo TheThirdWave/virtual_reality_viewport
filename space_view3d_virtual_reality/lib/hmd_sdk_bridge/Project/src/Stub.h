@@ -55,7 +55,7 @@ public:
 
 	void getProjectionMatrixRight(const float, const float, const bool, const bool, float *) {}
 
-	void getControllerState(long *, float *, long *, float *) {}
+	void getControllerState(unsigned long long *, float *, unsigned long long *, float *) {}
 };
 
 #endif /* __STUB_H__ */

@@ -57,7 +57,7 @@ public:
 
 	void getProjectionMatrixRight(const float nearz, const float farz, const bool is_opengl, const bool is_right_hand, float *r_matrix);
 
-	void getControllerState(long* c_state1, float* c_pos1, long* c_state2, float* c_pos2);
+	void getControllerState(unsigned long long* c_state1, float* c_pos1, unsigned long long* c_state2, float* c_pos2);
 
 private:
 	bool isConnected(void);
@@ -533,7 +533,7 @@ void OculusImpl::getProjectionMatrixRight(const float nearz, const float farz, c
 	formatMatrix(matrix, r_matrix);
 }
 
-void OculusImpl::getControllerState(long* c_state1, float* c_pos1, long* c_state2, float* c_pos2) {}
+void OculusImpl::getControllerState(unsigned long long* c_state1, float* c_pos1, unsigned long long* c_state2, float* c_pos2) {}
 
 unsigned int OculusImpl::getProjectionMatrixFlags(const bool is_opengl, const bool is_right_hand)
 {
@@ -617,7 +617,7 @@ void Oculus::getProjectionMatrixRight(const float nearz, const float farz, const
 	return this->m_me->getProjectionMatrixRight(nearz, farz, is_opengl, is_right_hand, r_matrix);
 }
 
-void Oculus::getControllerState(long* c_state1, float* c_pos1, long* c_state2, float* c_pos2)
+void Oculus::getControllerState(unsigned long long* c_state1, float* c_pos1, unsigned long long* c_state2, float* c_pos2)
 {
 	return this->m_me->getControllerState(c_state1, c_pos1, c_state2, c_pos2);
 }

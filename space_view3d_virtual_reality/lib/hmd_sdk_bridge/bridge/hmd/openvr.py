@@ -116,8 +116,8 @@ class HMD(baseHMD):
         conpos1_ptr = (c_float * 3)(*range(3))
         conpos2_ptr = (c_float * 3)(*range(3))
 		
-        constate1_ptr = (c_long * 3)(*range(3))
-        constate2_ptr = (c_long * 3)(*range(3))
+        constate1_ptr = (c_longlong * 2)(*range(2))
+        constate2_ptr = (c_longlong * 2)(*range(2))
 		
         devices_ptr = ctypes.pointer(ctypes.c_int())
 
