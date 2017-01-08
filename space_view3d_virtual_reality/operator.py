@@ -1,5 +1,6 @@
 import bpy
 import sys
+import enum
 
 from bpy.app.handlers import persistent
 
@@ -12,6 +13,7 @@ from .lib import (
         isMac,
         )
 
+from enum import IntEnum
 
 TODO = False
 
@@ -40,6 +42,12 @@ class SlaveStatus:
     paused       = 8   # paused
     error        = 9   # something didn't work
 
+class TouchState(IntEnum):
+    UnPressed = 0,
+    Up = 1,
+    Left = 2,
+    Down = 3,
+    Right = 4,
 
 # ############################################################
 # Main Operator
@@ -262,7 +270,7 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
         self._handle_pixel = bpy.types.SpaceView3D.draw_handler_add(self._draw_callback_pixel, (context,), 'WINDOW', 'POST_PIXEL')
         wm.modal_handler_add(self)
 
-        # Create spheres to render for controllers. alDentesInferno
+        # Create spheres to render for controllers.
         bpy.ops.mesh.primitive_uv_sphere_add(size=.05 * self._hmd._scale)
         self._con1obj = bpy.context.object
         self._con1dat = self._con1obj.data
@@ -424,10 +432,11 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
         self._is_rendering = True
         self._hmd.loop(context)
 
+        self._handleButtons(self._hmd._constate1[0], self._hmd._constate1[1])
+        self._handleButtons(self._hmd._constate2[0], self._hmd._constate2[1])
         vr.num_devices = self._hmd._devices
         vr.controller1_pos = self._hmd._conpos1
         vr.controller2_pos = self._hmd._conpos2
-        print(self._hmd._eye_position_raw)
 
         self._con1obj.location = self._hmd._conpos1_view
         self._con2obj.location = self._hmd._conpos2_view
@@ -449,6 +458,32 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
         self._hmd.frameReady()
         self._is_rendering = False
 
+    def _handleButtons(self, cstate, touchstate):
+        MenuButton = 2
+        GripButtons = 4
+        TouchPad = 1 << 32
+        Trigger = 1 << 33
+        print("handle buttons start!")
+        if(cstate & TouchPad):
+            print(touchstate)
+            print(TouchState.Up)
+            if(touchstate == TouchState.Up):
+                self._hmd._scale = self._hmd._scale - 1 #.scaleDown scales YOU down, making the rest of the world bigger
+                self._con1obj.scale[0] = self._hmd._scale
+                self._con1obj.scale[1] = self._hmd._scale
+                self._con1obj.scale[2] = self._hmd._scale
+                self._con2obj.scale[0] = self._hmd._scale
+                self._con2obj.scale[1] = self._hmd._scale
+                self._con2obj.scale[2] = self._hmd._scale
+            if(touchstate == TouchState.Down):
+                self._hmd._scale = self._hmd._scale + 1   #.scaleUp scales YOU up, making the rest of the world smaller
+                self._con1obj.scale[0] = self._hmd._scale
+                self._con1obj.scale[1] = self._hmd._scale
+                self._con1obj.scale[2] = self._hmd._scale
+                self._con2obj.scale[0] = self._hmd._scale
+                self._con2obj.scale[1] = self._hmd._scale
+                self._con2obj.scale[2] = self._hmd._scale
+    
     def _drawPreview(self, context):
         wm = context.window_manager
         vr = wm.virtual_reality

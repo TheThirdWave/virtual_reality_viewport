@@ -46,10 +46,10 @@ typedef enum eLibStatus
 typedef enum padButton
 {
 	NONE = 0,
-	DOWN,
-	RIGHT,
 	UP,
 	LEFT,
+	DOWN,
+	RIGHT,
 };
 
 class DllExport OpenVRImpl : protected Backend
@@ -743,11 +743,10 @@ int OpenVRImpl::getTrackpadButton(const vr::VRControllerState_t &flags)
 		float x = flags.rAxis[vr::k_eControllerAxis_None].x;//no, for whatever reason the x and y data for the touchpad isn't stored under
 		float y = flags.rAxis[vr::k_eControllerAxis_None].y;//k_eControllerAxis_Trackpad, even though a trackpad and a touchpad are the same thing
 		double radians = atan2(x, y);
-		printf("x = %f, y = %f, rads = %f", x, y, radians);
-		if (radians > (M_PI / 4) && radians < ((M_PI / 4) * 3)){ return DOWN; }
-		else if (radians > -(M_PI / 4) && radians < (M_PI / 4)){ return RIGHT; }
-		else if (radians > -((M_PI / 4) * 3) && radians < -(M_PI / 4)){ return UP; }
-		else if (radians > ((M_PI / 4) * 3) && radians < -((M_PI / 4) * 3)){ return LEFT; }
+		if (radians > (M_PI / 4) && radians < ((M_PI / 4) * 3)){ return RIGHT; }
+		else if (radians > -(M_PI / 4) && radians < (M_PI / 4)){ return UP; }
+		else if (radians > -((M_PI / 4) * 3) && radians < -(M_PI / 4)){ return LEFT; }
+		else if (radians > ((M_PI / 4) * 3) || radians < -((M_PI / 4) * 3)){ return DOWN; }
 		return NONE;
 	}
 }

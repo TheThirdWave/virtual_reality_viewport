@@ -89,8 +89,8 @@ class HMD_Base:
         self._offscreen = [None, None]
         self._eye_orientation_raw = [[1.0, 0.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0]]
         self._eye_position_raw = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]
-        ##self._scale = self._calculateScale(context)
-        self._scale = 10
+        #self._scale = self._calculateScale(context)
+        self._scale = 1
         self._status = "Uninitialized"
 
         self._updateViewClipping(context)
