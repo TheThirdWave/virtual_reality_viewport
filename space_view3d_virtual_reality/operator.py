@@ -15,6 +15,10 @@ from .lib import (
 
 from enum import IntEnum
 
+from mathutils import (
+        Matrix
+        )
+
 TODO = False
 
 
@@ -66,6 +70,10 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
     _con2obj = None
     _con1dat = None
     _con2dat = None
+    _menuPressed = False
+    _gripPressed = False
+    _touchPressed = False
+    _triggerPressed = False
     _handle_pre = None
     _handle_post = None
     _handle_pixel = None
@@ -432,8 +440,8 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
         self._is_rendering = True
         self._hmd.loop(context)
 
-        self._handleButtons(self._hmd._constate1[0], self._hmd._constate1[1])
-        self._handleButtons(self._hmd._constate2[0], self._hmd._constate2[1])
+        self._handleButtons(context, self._hmd._constate1[0], self._hmd._constate1[1], self._hmd._conpos1_vec, self._hmd._conpos1_vec_old)
+        self._handleButtons(context, self._hmd._constate2[0], self._hmd._constate2[1], self._hmd._conpos2_vec, self._hmd._conpos2_vec_old)
         vr.num_devices = self._hmd._devices
         vr.controller1_pos = self._hmd._conpos1
         vr.controller2_pos = self._hmd._conpos2
@@ -458,16 +466,14 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
         self._hmd.frameReady()
         self._is_rendering = False
 
-    def _handleButtons(self, cstate, touchstate):
+    def _handleButtons(self, context, cstate, touchstate, pos, oldPos):
         MenuButton = 2
         GripButtons = 4
         TouchPad = 1 << 32
         Trigger = 1 << 33
-        print("handle buttons start!")
         if(cstate & TouchPad):
-            print(touchstate)
-            print(TouchState.Up)
-            if(touchstate == TouchState.Up):
+            if(not self._touchPressed): self._touchPressed = True
+            if(touchstate == TouchState.Up and self._hmd._scale > 1):
                 self._hmd._scale = self._hmd._scale - 1 #.scaleDown scales YOU down, making the rest of the world bigger
                 self._con1obj.scale[0] = self._hmd._scale
                 self._con1obj.scale[1] = self._hmd._scale
@@ -475,7 +481,7 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
                 self._con2obj.scale[0] = self._hmd._scale
                 self._con2obj.scale[1] = self._hmd._scale
                 self._con2obj.scale[2] = self._hmd._scale
-            if(touchstate == TouchState.Down):
+            elif(touchstate == TouchState.Down):
                 self._hmd._scale = self._hmd._scale + 1   #.scaleUp scales YOU up, making the rest of the world smaller
                 self._con1obj.scale[0] = self._hmd._scale
                 self._con1obj.scale[1] = self._hmd._scale
@@ -483,6 +489,32 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
                 self._con2obj.scale[0] = self._hmd._scale
                 self._con2obj.scale[1] = self._hmd._scale
                 self._con2obj.scale[2] = self._hmd._scale
+            elif(touchstate == TouchState.Left):
+                pass
+            elif(touchstate == TouchState.Right):
+                pass
+        
+        elif(self._touchPressed):
+            self._touchPressed = False
+        
+        
+        if(cstate & GripButtons):
+            #if(not self._gripPressed):
+            self._gripPressed = True
+            #else:
+            region = context.region_data
+            space = context.space_data
+            camera = space.camera
+            moveVec = pos - oldPos
+            moveVec = moveVec * 4
+            transMat = Matrix.Translation(moveVec)
+            region.view_matrix = transMat * region.view_matrix
+            
+            print(region.view_matrix)
+        
+        elif(self._gripPressed):
+            self._gripPressed = False
+            
     
     def _drawPreview(self, context):
         wm = context.window_manager

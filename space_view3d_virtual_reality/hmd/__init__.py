@@ -83,6 +83,10 @@ class HMD_Base:
         self._constate2 = 0
         self._conpos1 = [i for i in range(3)]
         self._conpos2 = [i for i in range(3)]
+        self._conpos1_vec = [i for i in range(3)]
+        self._conpos2_vec = [i for i in range(3)]
+        self._conpos1_vec_old = [i for i in range(3)]
+        self._conpos2_vec_old = [i for i in range(3)]
         self._conpos1_view = [i for i in range(3)]
         self._conpos2_view = [i for i in range(3)]
         self._color_texture = [0, 0]
@@ -229,10 +233,12 @@ class HMD_Base:
         view_matrix = self._getViewMatrix(context, vr.lock_camera)
 
         # transform controller positions to match the headset's position
-        self._conpos1_view = view_matrix.inverted() * Vector(self._scaleMovement(self._conpos1))
-        self._conpos2_view = view_matrix.inverted() * Vector(self._scaleMovement(self._conpos2))
-        print(self._constate1)
-        print(self._constate2)
+        self._conpos1_vec_old = self._conpos1_vec
+        self._conpos2_vec_old = self._conpos2_vec
+        self._conpos1_vec = Vector(self._scaleMovement(self._conpos1))
+        self._conpos2_vec = Vector(self._scaleMovement(self._conpos2))
+        self._conpos1_view = view_matrix.inverted() * self._conpos1_vec
+        self._conpos2_view = view_matrix.inverted() * self._conpos2_vec
 
         for i in range(2):
             if tracking_mode == 'NONE':
