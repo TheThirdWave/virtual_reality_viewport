@@ -74,6 +74,9 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
     _gripPressed = False
     _touchPressed = False
     _triggerPressed = False
+    _itemSelected = False
+    _selectedItem = None
+    _frame = 0
     _handle_pre = None
     _handle_post = None
     _handle_pixel = None
@@ -285,6 +288,7 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
         bpy.ops.mesh.primitive_uv_sphere_add(size=.05 * self._hmd._scale)
         self._con2obj = bpy.context.object
         self._con2dat = self._con2obj.data
+        bpy.ops.object.select_all(action="DESELECT")
 
         if self._hmd.is_direct_mode:
             self._init(context)
@@ -440,8 +444,8 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
         self._is_rendering = True
         self._hmd.loop(context)
 
-        self._handleButtons(context, self._hmd._constate1[0], self._hmd._constate1[1], self._hmd._conpos1_vec, self._hmd._conpos1_vec_old)
-        self._handleButtons(context, self._hmd._constate2[0], self._hmd._constate2[1], self._hmd._conpos2_vec, self._hmd._conpos2_vec_old)
+        self._handleButtons(context, self._hmd._constate1[0], self._hmd._constate1[1], self._hmd._conpos1_vec, self._hmd._conpos1_vec_old, self._hmd._conpos1_view, self._hmd._conpos1_view_old)
+        self._handleButtons(context, self._hmd._constate2[0], self._hmd._constate2[1], self._hmd._conpos2_vec, self._hmd._conpos2_vec_old, self._hmd._conpos2_view, self._hmd._conpos2_view_old)
         vr.num_devices = self._hmd._devices
         vr.controller1_pos = self._hmd._conpos1
         vr.controller2_pos = self._hmd._conpos2
@@ -466,13 +470,13 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
         self._hmd.frameReady()
         self._is_rendering = False
 
-    def _handleButtons(self, context, cstate, touchstate, pos, oldPos):
+
+    def _handleButtons(self, context, cstate, touchstate, pos, oldPos, viewPos, viewPosOld):
         MenuButton = 2
         GripButtons = 4
         TouchPad = 1 << 32
         Trigger = 1 << 33
         if(cstate & TouchPad):
-            if(not self._touchPressed): self._touchPressed = True
             if(touchstate == TouchState.Up and self._hmd._scale > 1):
                 self._hmd._scale = self._hmd._scale - 1 #.scaleDown scales YOU down, making the rest of the world bigger
                 self._con1obj.scale[0] = self._hmd._scale
@@ -489,32 +493,71 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
                 self._con2obj.scale[0] = self._hmd._scale
                 self._con2obj.scale[1] = self._hmd._scale
                 self._con2obj.scale[2] = self._hmd._scale
-            elif(touchstate == TouchState.Left):
-                pass
-            elif(touchstate == TouchState.Right):
-                pass
-        
+            elif((touchstate == TouchState.Left) and (self._touchPressed == False)):
+                self._frame = self._frame - 1
+                context.scene.frame_set(self._frame)
+            elif((touchstate == TouchState.Right) and (self._touchPressed == False)):
+                self._frame = self._frame + 1
+                context.scene.frame_set(self._frame)
+            
+            self._touchPressed = True
         elif(self._touchPressed):
             self._touchPressed = False
         
+        if(cstate & Trigger):
+            self._gripPressed = True
+            if(not self._itemSelected):
+                self._selectClosest(context, viewPos)
+            else:
+                self._selectedItem.keyframe_insert(data_path="location", frame=self._frame)
+
+        elif(self._gripPressed):
+            self._gripPressed = False
+
+        if(cstate & MenuButton):
+            self._menuPressed = True
+            bpy.ops.object.select_all(action="DESELECT")
+            self._itemSelected = False
+            
+        elif(self._menuPressed):
+            self._menuPressed = False
         
         if(cstate & GripButtons):
-            #if(not self._gripPressed):
             self._gripPressed = True
-            #else:
-            region = context.region_data
-            space = context.space_data
-            camera = space.camera
-            moveVec = pos - oldPos
-            moveVec = moveVec * 4
-            transMat = Matrix.Translation(moveVec)
-            region.view_matrix = transMat * region.view_matrix
+            if(not self._itemSelected):
+                region = context.region_data
+                space = context.space_data
+                camera = space.camera
+                moveVec = pos - oldPos
+                moveVec = moveVec * 4
+                transMat = Matrix.Translation(moveVec)
+                region.view_matrix = transMat * region.view_matrix
             
-            print(region.view_matrix)
+            else:
+                moveVec = viewPos - viewPosOld
+                moveVec = moveVec * 4
+                self._selectedItem.location = self._selectedItem.location + moveVec
+            
         
         elif(self._gripPressed):
             self._gripPressed = False
             
+    def _selectClosest(self, context, pos):
+        scene = context.scene
+        closestdist = 9999999
+        closestobj = 0
+        for object in scene.objects:
+            if((object != self._con1obj) and (object != self._con2obj)):
+                distance = object.location - pos
+                if(distance.length < closestdist):
+                    closestdist = distance.length
+                    closestobj = object
+        
+        if(closestobj != 0):
+            closestobj.select = True
+            self._itemSelected = True
+            self._selectedItem = closestobj
+            scene.objects.active = self._selectedItem
     
     def _drawPreview(self, context):
         wm = context.window_manager

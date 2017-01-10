@@ -89,6 +89,8 @@ class HMD_Base:
         self._conpos2_vec_old = [i for i in range(3)]
         self._conpos1_view = [i for i in range(3)]
         self._conpos2_view = [i for i in range(3)]
+        self._conpos1_view_old = [i for i in range(3)]
+        self._conpos2_view_old = [i for i in range(3)]
         self._color_texture = [0, 0]
         self._offscreen = [None, None]
         self._eye_orientation_raw = [[1.0, 0.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0]]
@@ -237,6 +239,8 @@ class HMD_Base:
         self._conpos2_vec_old = self._conpos2_vec
         self._conpos1_vec = Vector(self._scaleMovement(self._conpos1))
         self._conpos2_vec = Vector(self._scaleMovement(self._conpos2))
+        self._conpos1_view_old = self._conpos1_view
+        self._conpos2_view_old = self._conpos2_view
         self._conpos1_view = view_matrix.inverted() * self._conpos1_vec
         self._conpos2_view = view_matrix.inverted() * self._conpos2_vec
 
