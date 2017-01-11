@@ -516,6 +516,9 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
 
         if(cstate & MenuButton):
             self._menuPressed = True
+            if(context.scene.objects.active.type == 'ARMATURE'):
+                self._selectedItem.bone.select = False
+                bpy.ops.object.mode_set(mode='OBJECT')
             bpy.ops.object.select_all(action="DESELECT")
             self._itemSelected = False
             
@@ -536,7 +539,11 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
             else:
                 moveVec = viewPos - viewPosOld
                 moveVec = moveVec * 4
-                self._selectedItem.location = self._selectedItem.location + moveVec
+                if(type(self._selectedItem) is bpy.types.PoseBone):
+                    transMat = Matrix.Translation(moveVec)
+                    self._selectedItem.matrix = transMat * self._selectedItem.matrix
+                else:
+                    self._selectedItem.location = self._selectedItem.location + moveVec
             
         
         elif(self._gripPressed):
@@ -546,18 +553,39 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
         scene = context.scene
         closestdist = 9999999
         closestobj = 0
+        armature = 0
         for object in scene.objects:
+            print(object)
+            print(object.location)
             if((object != self._con1obj) and (object != self._con2obj)):
-                distance = object.location - pos
-                if(distance.length < closestdist):
-                    closestdist = distance.length
-                    closestobj = object
+                if(object.type != 'ARMATURE'):
+                    distance = object.location - pos
+                    if(distance.length < closestdist):
+                        closestdist = distance.length
+                        closestobj = object
+                else:
+                    for bone in object.pose.bones:
+                        if(not bone.bone.hide_select):
+                            print(bone)
+                            print(bone.location)
+                            distance = bone.matrix.to_translation() - pos
+                            if(distance.length < closestdist):
+                                closestdist = distance.length
+                                closestobj = bone
+                                armature = object
         
-        if(closestobj != 0):
+        if(type(closestobj) is bpy.types.PoseBone):
+            closestobj.bone.select = True
+            self._itemSelected = True
+            self._selectedItem = closestobj
+            scene.objects.active = armature
+            bpy.ops.object.mode_set(mode='POSE')
+        else:
             closestobj.select = True
             self._itemSelected = True
             self._selectedItem = closestobj
             scene.objects.active = self._selectedItem
+        print(closestobj)
     
     def _drawPreview(self, context):
         wm = context.window_manager
