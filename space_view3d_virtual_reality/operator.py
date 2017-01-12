@@ -555,8 +555,6 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
         closestobj = 0
         armature = 0
         for object in scene.objects:
-            print(object)
-            print(object.location)
             if((object != self._con1obj) and (object != self._con2obj)):
                 if(object.type != 'ARMATURE'):
                     distance = object.location - pos
@@ -566,8 +564,6 @@ class VirtualRealityDisplayOperator(bpy.types.Operator):
                 else:
                     for bone in object.pose.bones:
                         if(not bone.bone.hide_select):
-                            print(bone)
-                            print(bone.location)
                             distance = bone.matrix.to_translation() - pos
                             if(distance.length < closestdist):
                                 closestdist = distance.length
